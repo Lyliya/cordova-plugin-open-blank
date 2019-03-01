@@ -36,31 +36,49 @@
 
 - (BOOL)shouldOverrideLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    
+    return YES;
     NSURL* url = [request URL];
     BOOL allowNavigationsPass = YES;
-    
-    switch (navigationType) {
-        case UIWebViewNavigationTypeLinkClicked:
-        case UIWebViewNavigationTypeOther:
-        {
-            NSString *javascriptString, *pre, *post;
-            pre = @"cordova.InAppBrowser.open('";
-            post = @"', '_blank');";
-            javascriptString = [javascriptString stringByAppendingString:pre];
-            javascriptString = [javascriptString stringByAppendingString:url];
-            javascriptString = [javascriptString stringByAppendingString:post];
-            [self.viewController.webView stringByEvaluatingJavaScriptFromString:javascriptString];
-            /*
-            NSString *string1 = url.absoluteString;
-            NSRange range = [ string1 rangeOfString:@"utm_content"];
-            if (range.location != NSNotFound) {
-                [[UIApplication sharedApplication] openURL:url];
-                allowNavigationsPass = NO;
-            }
-            */
-        }
 
+    NSString *urlAbsoluteString = url.absoluteString;
+    NSRange range = [ urlAbsoluteString rangeOfString:@"file"];
+    [self.commandDelegate evalJs:@"console.log('foo')"];
+
+    if (range.location == NSNotFound) {
+        switch (navigationType) {
+            case UIWebViewNavigationTypeLinkClicked:
+            case UIWebViewNavigationTypeOther:
+            {
+                NSString *javascriptString, *pre, *post;
+                javascriptString = @"";
+                pre = @"cordova.InAppBrowser.open('";
+                post = @"', '_blank');";
+                javascriptString = [javascriptString stringByAppendingString:pre];
+                javascriptString = [javascriptString stringByAppendingString:urlAbsoluteString];
+                javascriptString = [javascriptString stringByAppendingString:post];
+                // [self.commandDelegate evalJs:javascriptString];
+
+
+                NSString *postLog, *log;
+                log = @"console.log('";
+                postLog = @"');";
+                log = [log stringByAppendingString:urlAbsoluteString];
+                log = [log stringByAppendingString:postLog];
+                [self.commandDelegate evalJs:log];
+                [self.commandDelegate evalJs:@"console.log('after')"];
+
+                // allowNavigationsPass = NO;
+
+                /*
+                NSString *string1 = url.absoluteString;
+                NSRange range = [ string1 rangeOfString:@"utm_content"];
+                if (range.location != NSNotFound) {
+                    [[UIApplication sharedApplication] openURL:url];
+                    allowNavigationsPass = NO;
+                }
+                */
+            }
+        }
     }
     
     return allowNavigationsPass;
