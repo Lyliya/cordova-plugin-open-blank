@@ -42,20 +42,25 @@
     
     switch (navigationType) {
         case UIWebViewNavigationTypeLinkClicked:
-        {
-            [[UIApplication sharedApplication] openURL:url];
-            allowNavigationsPass = NO;
-        }
         case UIWebViewNavigationTypeOther:
         {
+            NSString *javascriptString, *pre, *post;
+            pre = @"cordova.InAppBrowser.open('";
+            post = @"', '_blank');";
+            javascriptString = [javascriptString stringByAppendingString:pre];
+            javascriptString = [javascriptString stringByAppendingString:url];
+            javascriptString = [javascriptString stringByAppendingString:post];
+            [self.viewController.webView stringByEvaluatingJavaScriptFromString:javascriptString];
+            /*
             NSString *string1 = url.absoluteString;
             NSRange range = [ string1 rangeOfString:@"utm_content"];
             if (range.location != NSNotFound) {
                 [[UIApplication sharedApplication] openURL:url];
                 allowNavigationsPass = NO;
             }
+            */
         }
-                
+
     }
     
     return allowNavigationsPass;
