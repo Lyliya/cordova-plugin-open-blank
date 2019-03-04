@@ -39,15 +39,14 @@
     NSURL* url = [request URL];
     BOOL allowNavigationsPass = YES;
 
+    // [self.commandDelegate evalJs:@"console.log('foo')"];
     NSString *urlAbsoluteString = url.absoluteString;
     NSRange range = [ urlAbsoluteString rangeOfString:@"file://"];
-    [self.commandDelegate evalJs:@"console.log('foo')"];
 
     if (range.location == NSNotFound) {
         switch (navigationType) {
             case UIWebViewNavigationTypeLinkClicked:
             {
-                NSString *string1 = url.absoluteString;
                 [[UIApplication sharedApplication] openURL:url];
                 allowNavigationsPass = NO;
             }
