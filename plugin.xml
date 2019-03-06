@@ -4,7 +4,6 @@
     <name>Open Blank</name>
     <description>Cordova Open Blank Plugin</description>
     <license>Apache 2.0</license>
-    <repo>https://github.com/slaptoast/cordova-plugin-openblank.git</repo>
     <keywords>cordova,webview,iframe,blank</keywords>
     <platform name="ios">
       <header-file src="src/ios/CDVIntentAndNavigationFilter+OpenBlank.h" />
