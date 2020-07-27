@@ -6,9 +6,9 @@
  to you under the Apache License, Version 2.0 (the
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
- 
+
  http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -36,23 +36,27 @@
 
 - (BOOL)shouldOverrideLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    NSURL* url = [request URL];
     BOOL allowNavigationsPass = YES;
 
-    // [self.commandDelegate evalJs:@"console.log('foo')"];
-    NSString *urlAbsoluteString = url.absoluteString;
-    NSRange range = [ urlAbsoluteString rangeOfString:@"file://"];
+    [self.commandDelegate evalJs:@"console.log('foo')"];
 
-    if (range.location == NSNotFound) {
-        switch (navigationType) {
-            case UIWebViewNavigationTypeLinkClicked:
-            {
-                [[UIApplication sharedApplication] openURL:url];
-                allowNavigationsPass = NO;
-            }
-        }
+    NSString *urlNavigationTarget = request.URL.absoluteString;
+    NSRange rangeNavigationTarget = [ urlNavigationTarget rangeOfString:@"app://"];
+    bool navigateTargetOutside = rangeNavigationTarget.location == NSNotFound;
+
+    NSString *urlMainDocument = request.mainDocumentURL.absoluteString;
+    NSRange rangeMainDocument = [ urlMainDocument rangeOfString:@"app://"];
+    bool mainDocumentOutside = rangeMainDocument.location == NSNotFound;
+
+    bool isLinkClick = (navigationType & UIWebViewNavigationTypeLinkClicked) == UIWebViewNavigationTypeLinkClicked;
+    bool isReload = (navigationType & UIWebViewNavigationTypeReload) == UIWebViewNavigationTypeReload;
+
+    if (navigateTargetOutside && isLinkClick && (!isReload || mainDocumentOutside)) {
+        [self.commandDelegate evalJs:@"console.log('no')"];
+        allowNavigationsPass = NO;
+        [[UIApplication sharedApplication] openURL:request.URL];
     }
-    
+
     return allowNavigationsPass;
 }
 
