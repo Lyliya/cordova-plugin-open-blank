@@ -54,7 +54,7 @@
     if (navigateTargetOutside && isLinkClick && (!isReload || mainDocumentOutside)) {
         // [self.commandDelegate evalJs:@"console.log('no')"];
         allowNavigationsPass = NO;
-        [[UIApplication sharedApplication] openURL:request.URL];
+        [[UIApplication sharedApplication] openURL:request.URL options:@{} completionHandler:nil];
     }
 
     return allowNavigationsPass;
