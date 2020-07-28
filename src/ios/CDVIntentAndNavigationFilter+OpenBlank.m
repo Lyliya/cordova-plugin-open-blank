@@ -38,7 +38,7 @@
 {
     BOOL allowNavigationsPass = YES;
 
-    [self.commandDelegate evalJs:@"console.log('foo')"];
+    // [self.commandDelegate evalJs:@"console.log('foo')"];
 
     NSString *urlNavigationTarget = request.URL.absoluteString;
     NSRange rangeNavigationTarget = [ urlNavigationTarget rangeOfString:@"app://"];
@@ -52,7 +52,7 @@
     bool isReload = (navigationType & UIWebViewNavigationTypeReload) == UIWebViewNavigationTypeReload;
 
     if (navigateTargetOutside && isLinkClick && (!isReload || mainDocumentOutside)) {
-        [self.commandDelegate evalJs:@"console.log('no')"];
+        // [self.commandDelegate evalJs:@"console.log('no')"];
         allowNavigationsPass = NO;
         [[UIApplication sharedApplication] openURL:request.URL];
     }
