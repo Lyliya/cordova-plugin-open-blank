@@ -22,8 +22,9 @@
 
 @implementation CDVIntentAndNavigationFilter (OpenBlank)
 
-
-
+#define CDVWebViewNavigationType int
+#define CDVWebViewNavigationTypeLinkClicked 0
+#define CDVWebViewNavigationTypeReload -1
 
 #pragma mark CDVPlugin
 
@@ -34,7 +35,7 @@
     }
 }
 
-- (BOOL)shouldOverrideLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType
+- (BOOL)shouldOverrideLoadWithRequest:(NSURLRequest*)request navigationType:(CDVWebViewNavigationType)navigationType
 {
     BOOL allowNavigationsPass = YES;
 
@@ -48,8 +49,8 @@
     NSRange rangeMainDocument = [ urlMainDocument rangeOfString:@"app://"];
     bool mainDocumentOutside = rangeMainDocument.location == NSNotFound;
 
-    bool isLinkClick = (navigationType & UIWebViewNavigationTypeLinkClicked) == UIWebViewNavigationTypeLinkClicked;
-    bool isReload = (navigationType & UIWebViewNavigationTypeReload) == UIWebViewNavigationTypeReload;
+    bool isLinkClick = (navigationType & CDVWebViewNavigationTypeLinkClicked) == CDVWebViewNavigationTypeLinkClicked;
+    bool isReload = (navigationType & CDVWebViewNavigationTypeReload) == CDVWebViewNavigationTypeReload;
 
     if (navigateTargetOutside && isLinkClick && (!isReload || mainDocumentOutside)) {
         // [self.commandDelegate evalJs:@"console.log('no')"];
