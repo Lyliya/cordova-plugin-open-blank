@@ -19,6 +19,7 @@
 
 #import "CDVIntentAndNavigationFilter+OpenBlank.h"
 #import <Cordova/CDV.h>
+#import "CDVWKInAppBrowser.h"
 
 @implementation CDVIntentAndNavigationFilter (OpenBlank)
 
@@ -40,22 +41,25 @@
     BOOL allowNavigationsPass = YES;
 
     // [self.commandDelegate evalJs:@"console.log('foo')"];
-
+    
     NSString *urlNavigationTarget = request.URL.absoluteString;
-    NSRange rangeNavigationTarget = [ urlNavigationTarget rangeOfString:@"app://"];
+    if(![urlNavigationTarget hasPrefix:@"http"]) {
+        return YES;
+    }
+    NSRange rangeNavigationTarget = [ urlNavigationTarget rangeOfString:@"ionic://"];
     bool navigateTargetOutside = rangeNavigationTarget.location == NSNotFound;
-
     NSString *urlMainDocument = request.mainDocumentURL.absoluteString;
-    NSRange rangeMainDocument = [ urlMainDocument rangeOfString:@"app://"];
+    NSRange rangeMainDocument = [ urlMainDocument rangeOfString:@"ionic://"];
+
     bool mainDocumentOutside = rangeMainDocument.location == NSNotFound;
-
-    bool isLinkClick = (navigationType & CDVWebViewNavigationTypeLinkClicked) == CDVWebViewNavigationTypeLinkClicked;
+    bool isLinkClick = navigationType  == CDVWebViewNavigationTypeLinkClicked;
     bool isReload = (navigationType & CDVWebViewNavigationTypeReload) == CDVWebViewNavigationTypeReload;
-
     if (navigateTargetOutside && isLinkClick && (!isReload || mainDocumentOutside)) {
         // [self.commandDelegate evalJs:@"console.log('no')"];
         allowNavigationsPass = NO;
-        [[UIApplication sharedApplication] openURL:request.URL options:@{} completionHandler:nil];
+       // [[UIApplication sharedApplication] openURL:request.URL options:@{} completionHandler:nil];
+        NSString *jsString = [NSString stringWithFormat:@"cordova.InAppBrowser.open('%@','_blank');",urlNavigationTarget];
+        [self.commandDelegate evalJs:jsString];
     }
 
     return allowNavigationsPass;
