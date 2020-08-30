@@ -41,7 +41,7 @@
     BOOL allowNavigationsPass = YES;
 
     // [self.commandDelegate evalJs:@"console.log('foo')"];
-    
+
     NSString *urlNavigationTarget = request.URL.absoluteString;
     if(![urlNavigationTarget hasPrefix:@"http"]) {
         return YES;
@@ -58,7 +58,9 @@
         // [self.commandDelegate evalJs:@"console.log('no')"];
         allowNavigationsPass = NO;
        // [[UIApplication sharedApplication] openURL:request.URL options:@{} completionHandler:nil];
-        NSString *jsString = [NSString stringWithFormat:@"cordova.InAppBrowser.open('%@','_blank');",urlNavigationTarget];
+       // NSString *jsString = [NSString stringWithFormat:@"cordova.InAppBrowser.open('%@','_blank');",urlNavigationTarget];
+        //
+        NSString *jsString = [NSString stringWithFormat:@"SafariViewController.show({url:\"%@\"});",urlNavigationTarget];
         [self.commandDelegate evalJs:jsString];
     }
 
