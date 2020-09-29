@@ -40,27 +40,35 @@
 {
     BOOL allowNavigationsPass = YES;
 
-    // [self.commandDelegate evalJs:@"console.log('foo')"];
-
     NSString *urlNavigationTarget = request.URL.absoluteString;
+
+    // NSLog(@"UrlNavigation: %@", urlNavigationTarget);
+
     if(![urlNavigationTarget hasPrefix:@"http"]) {
+        // NSLog(@"dont have http prefix");
         return YES;
     }
-    NSRange rangeNavigationTarget = [ urlNavigationTarget rangeOfString:@"ionic://"];
-    bool navigateTargetOutside = rangeNavigationTarget.location == NSNotFound;
     NSString *urlMainDocument = request.mainDocumentURL.absoluteString;
     NSRange rangeMainDocument = [ urlMainDocument rangeOfString:@"ionic://"];
+    urlMainDocument = [urlMainDocument stringByReplacingOccurrencesOfString:@"ionic://" withString:@""];
+    
+    NSRange rangeNavigationTarget = [ urlNavigationTarget rangeOfString:urlMainDocument];
+    bool navigateTargetOutside = rangeNavigationTarget.location == NSNotFound;
 
+    // NSLog(@"UrlMainDocument: %@", urlMainDocument);
+    
     bool mainDocumentOutside = rangeMainDocument.location == NSNotFound;
     bool isLinkClick = navigationType  == CDVWebViewNavigationTypeLinkClicked;
     bool isReload = (navigationType & CDVWebViewNavigationTypeReload) == CDVWebViewNavigationTypeReload;
+    
+    NSLog(@"Navigate TargetOutside: %d, isLinkClick: %d, isReload: %d, mainDocumentOutside: %d", navigateTargetOutside, isLinkClick, isReload, mainDocumentOutside);
     if (navigateTargetOutside && isLinkClick && (!isReload || mainDocumentOutside)) {
         // [self.commandDelegate evalJs:@"console.log('no')"];
         allowNavigationsPass = NO;
        // [[UIApplication sharedApplication] openURL:request.URL options:@{} completionHandler:nil];
-        // NSString *jsString = [NSString stringWithFormat:@"cordova.InAppBrowser.open('%@','_system');",urlNavigationTarget];
+        NSString *jsString = [NSString stringWithFormat:@"cordova.InAppBrowser.open('%@','_system');",urlNavigationTarget];
         //
-        NSString *jsString = [NSString stringWithFormat:@"SafariViewController.show({url:\"%@\"});",urlNavigationTarget];
+        // NSString *jsString = [NSString stringWithFormat:@"SafariViewController.show({url:\"%@\"});",urlNavigationTarget];
         [self.commandDelegate evalJs:jsString];
     }
 
