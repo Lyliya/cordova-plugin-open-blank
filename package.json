@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-open-blank",
-  "version": "1.4.1-dev",
+  "version": "1.4.2-dev",
   "description": "Cordova open blank Plugin",
   "cordova": {
     "id": "cordova-plugin-open-blank",
