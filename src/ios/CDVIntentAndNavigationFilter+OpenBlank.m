@@ -58,9 +58,9 @@
         // [self.commandDelegate evalJs:@"console.log('no')"];
         allowNavigationsPass = NO;
        // [[UIApplication sharedApplication] openURL:request.URL options:@{} completionHandler:nil];
-        NSString *jsString = [NSString stringWithFormat:@"cordova.InAppBrowser.open('%@','_system');",urlNavigationTarget];
+        // NSString *jsString = [NSString stringWithFormat:@"cordova.InAppBrowser.open('%@','_system');",urlNavigationTarget];
         //
-        //NSString *jsString = [NSString stringWithFormat:@"SafariViewController.show({url:\"%@\"});",urlNavigationTarget];
+        NSString *jsString = [NSString stringWithFormat:@"SafariViewController.show({url:\"%@\"});",urlNavigationTarget];
         [self.commandDelegate evalJs:jsString];
     }
 
