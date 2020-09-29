@@ -19,7 +19,7 @@ public class OpenBlank extends CordovaPlugin {
             // Adding the MIME type to http: URLs causes them to not be handled by the downloader.
             Uri uri = Uri.parse(url);
             if ("http".equals(uri.getScheme()) || "https".equals(uri.getScheme())) {
-                webView.sendJavascript("cordova.InAppBrowser.open('" + url + "', '_blank');");
+                webView.sendJavascript("cordova.InAppBrowser.open('" + url + "', '_system');");
             } else {
                 return false;
             }
